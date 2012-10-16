@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='pgu_test_widget_employees'>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+  
+  <inherits name="com.github.gwtbootstrap.Bootstrap" />
+  
+  <set-property name="bootstrap.responsiveDesign" value="true"/>
+  
+  <entry-point class='pgu.widget.employees.client.Pgu_test_widget_employees'/>
+  
+  <set-property name="user.agent" value="safari"/>
+  <set-property name="locale" value="default" />
+  
+  <source path='client'/>
+  <source path='shared'/>
+
+</module>
