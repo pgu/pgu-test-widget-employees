@@ -16,15 +16,15 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
         listenToMessage(functionToApplyOnContainerAction(welcome));
 
-        sendNotificationToContainer();
+        welcome.setPresenter(this);
 
     }
 
-    private native void sendNotificationToContainer() /*-{
+    public native void sendNotificationToContainer(String nb) /*-{
             var notification = {};
             notification.type = 'notif';
             notification.id = 'employees';
-            notification.count = '50';
+            notification.count = nb;
 
             var msg_back = JSON.stringify(notification);
             $wnd.console.log(msg_back);

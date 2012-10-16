@@ -21,8 +21,8 @@
             <b:WellForm addStyleNames="{style.form}">
                 <b:ControlLabel>Nb of employees</b:ControlLabel>
                 <b:TextBox ui:field="nbEmployeesBox" placeholder="How many employees do you have?"/>
-<!--                 <b:ControlLabel/> -->
-<!--                 <b:Button ui:field="sendBtn" type="PRIMARY">Tells the container</b:Button> -->
+                <b:ControlLabel/>
+                <b:Button ui:field="sendBtn" type="PRIMARY">Send to the container</b:Button>
             </b:WellForm>
         </div>
     </g:HTMLPanel>
