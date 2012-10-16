@@ -15,7 +15,29 @@ public class Pgu_test_widget_employees implements EntryPoint {
         RootPanel.get().add(welcome);
 
         listenToMessage(functionToApplyOnContainerAction(welcome));
+
+        sendNotificationToContainer();
+
     }
+
+    private native void sendNotificationToContainer() /*-{
+            var notification = {};
+            notification.type = 'notif';
+            notification.id = 'employees';
+            notification.count = '50';
+
+            var msg_back = JSON.stringify(notification);
+            $wnd.console.log(msg_back);
+
+            $wnd.console.log($wnd.parent);
+
+            if ($wnd.parent //
+                    && $wnd !== $wnd.parent) {
+
+                $wnd.parent.postMessage(msg_back, 'http://localhost:8080');
+            }
+
+    }-*/;
 
     private native void listenToMessage(JavaScriptObject fn_to_apply) /*-{
         $wnd.addEventListener('message', fn_to_apply, false);
@@ -36,6 +58,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
                     var nb = view.@pgu.widget.employees.client.EmployeeWelcome::getNbEmployees()();
 
                     var response = {};
+                    response.type = 'response';
                     response.id = 'employees';
                     response.count = nb;
 
