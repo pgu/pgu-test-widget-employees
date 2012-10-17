@@ -1,0 +1,79 @@
+package pgu.widget.employees.client;
+
+import com.github.gwtbootstrap.client.ui.Button;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+
+public class EmployeesUI extends Composite {
+
+    private static EmployeesUIUiBinder uiBinder = GWT.create(EmployeesUIUiBinder.class);
+
+    interface EmployeesUIUiBinder extends UiBinder<Widget, EmployeesUI> {
+    }
+
+    @UiField
+    HTML employeesArea;
+    @UiField
+    Button addBtn;
+
+    private final Pgu_test_widget_employees pgu_test_widget_employees;
+
+    public EmployeesUI(final Pgu_test_widget_employees pgu_test_widget_employees) {
+        initWidget(uiBinder.createAndBindUi(this));
+
+        this.pgu_test_widget_employees = pgu_test_widget_employees;
+    }
+
+    @UiHandler("addBtn")
+    public void clickOnAdd(final ClickEvent e) {
+        pgu_test_widget_employees.goToNewEntity();
+    }
+
+    public void showEmployees() {
+        final String nb = "" + Pgu_test_widget_employees.id2employees.size();
+        pgu_test_widget_employees.sendNotificationToContainer(nb);
+
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append(""+ //
+                "<table class=\"table table-bordered table-striped\" style=\"margin-top: 20px;\">"+ //
+                "<thead> "+ //
+                " <tr> "+ //
+                "  <th>Employees</th>"+ //
+                " </tr> "+ //
+                "</thead> "+ //
+                "<tbody ui:field=\"tableBody\">"+ //
+                "" //
+                );
+        for (int i = 0; i < Pgu_test_widget_employees.id2employees.size(); i++) {
+            final Employee employee = Pgu_test_widget_employees.id2employees.get(i);
+
+            sb.append("" + //
+                    "<tr>" + //
+                    " <td>" + //
+                    employee.getName() + //
+                    " </td>" + //
+                    " <td>" + //
+                    " <a href=\"javascript:;\" class=\"btn btn-primary\" onclick=\"edit_employee(''+" + employee.getId() + ");return false;\"><i></i> Edit </a>" + //
+                    " </td>" + //
+                    "</tr>" + //
+                    "" //
+                    );
+        }
+
+        sb.append("" + //
+                " </tbody>"  + //
+                "</table>"  + //
+                "" //
+                );
+
+        employeesArea.setHTML(sb.toString());
+    }
+
+}

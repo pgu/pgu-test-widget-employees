@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+            xmlns:g="urn:import:com.google.gwt.user.client.ui"
+            xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+    <g:HTMLPanel addStyleNames="container-fluid">
+        
+        <div class="row-fluid">
+            <b:WellForm>
+                <b:ControlLabel>Name</b:ControlLabel>
+                <b:TextBox ui:field="nameBox" placeholder="John Smith"/>
+                <b:ControlLabel/>
+                <b:Button ui:field="saveBtn" type="PRIMARY" icon="SAVE" />
+            </b:WellForm>
+        </div>
+        
+    </g:HTMLPanel>
+</ui:UiBinder> 

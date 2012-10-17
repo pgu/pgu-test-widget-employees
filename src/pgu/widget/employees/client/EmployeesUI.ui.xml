@@ -3,11 +3,6 @@
             xmlns:g="urn:import:com.google.gwt.user.client.ui"
             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-    <ui:style>
-        .form {
-            margin-top: 20px;
-        }
-    </ui:style>
     <g:HTMLPanel addStyleNames="container-fluid">
         <div class="row-fluid">
         
@@ -18,13 +13,13 @@
         </div>
         
         <div class="row-fluid">
-            <b:WellForm addStyleNames="{style.form}">
-                <b:ControlLabel>Nb of employees</b:ControlLabel>
-                <b:TextBox ui:field="nbEmployeesBox" placeholder="How many employees do you have?"/>
-                <b:ControlLabel/>
-                <b:Button ui:field="sendBtn" type="PRIMARY">Send to the container</b:Button>
-            </b:WellForm>
+            <g:HTML ui:field="employeesArea" addStyleNames="row-fluid" />
         </div>
+        
+        <div class="row-fluid">
+            <b:Button ui:field="addBtn" type="PRIMARY" icon="PLUS" />
+        </div>
+        
     </g:HTMLPanel>
 
 </ui:UiBinder> 
