@@ -9,6 +9,14 @@
             <b:WellForm>
                 <b:ControlLabel>Name</b:ControlLabel>
                 <b:TextBox ui:field="nameBox" placeholder="John Smith"/>
+                <b:ControlLabel>Technos</b:ControlLabel>
+                <b:CheckBox ui:field="java">Java</b:CheckBox>
+                <b:CheckBox ui:field="clojure">Clojure</b:CheckBox>
+                <b:CheckBox ui:field="net">.Net</b:CheckBox>
+                <b:CheckBox ui:field="js">Javascript</b:CheckBox>
+                <b:CheckBox ui:field="gwt">GWT</b:CheckBox>
+                <b:CheckBox ui:field="sql">SQL</b:CheckBox>
+                <b:CheckBox ui:field="nosql">NoSQL</b:CheckBox>
                 <b:ControlLabel/>
                 <b:Button ui:field="saveBtn" type="PRIMARY" icon="SAVE" />
             </b:WellForm>

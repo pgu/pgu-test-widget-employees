@@ -1,6 +1,12 @@
 package pgu.widget.employees.client;
 
+import java.util.ArrayList;
+
+import pgu.widget.employees.shared.Employee;
+import pgu.widget.employees.shared.Technos;
+
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,6 +27,8 @@ public class EmployeeUI extends Composite {
     Button saveBtn;
     @UiField
     TextBox nameBox;
+    @UiField
+    CheckBox java, clojure, net, js, gwt, sql, nosql;
 
     private final Pgu_test_widget_employees pgu_test_widget_employees;
 
@@ -30,22 +38,57 @@ public class EmployeeUI extends Composite {
         this.pgu_test_widget_employees = pgu_test_widget_employees;
     }
 
-    private Integer current_id = null;
     private boolean isNew = true;
+    private Employee currentEmployee;
 
-    public void setEmployeeId(final String id) {
 
-        GWT.log("employee id " + id);
 
-        isNew = null == id;
+    public void setEmployee(final Employee employee) {
+
+        java.setValue(false);
+        clojure.setValue(false);
+        net.setValue(false);
+        js.setValue(false);
+        gwt.setValue(false);
+        sql.setValue(false);
+        nosql.setValue(false);
+
+        GWT.log("employee " + employee);
+        currentEmployee = employee;
+
+        isNew = null == employee;
         if (isNew) {
-            current_id = null;
             nameBox.setText("");
 
         } else {
-            current_id = Integer.valueOf(id);
-            final Employee employee = Pgu_test_widget_employees.id2employees.get(current_id);
             nameBox.setText(employee.getName());
+
+            if (employee.getTechnos() != null) {
+                for (final String t : employee.getTechnos()) {
+                    if (Technos.JAVA.equals(t)) {
+                        java.setValue(true);
+
+                    } else if (Technos.CLOJURE.equals(t)) {
+                        clojure.setValue(true);
+
+                    } else if (Technos.NET.equals(t)) {
+                        net.setValue(true);
+
+                    } else if (Technos.JS.equals(t)) {
+                        js.setValue(true);
+
+                    } else if (Technos.GWT.equals(t)) {
+                        gwt.setValue(true);
+
+                    } else if (Technos.SQL.equals(t)) {
+                        sql.setValue(true);
+
+                    } else if (Technos.NOSQL.equals(t)) {
+                        nosql.setValue(true);
+
+                    }
+                }
+            }
 
         }
     }
@@ -53,31 +96,47 @@ public class EmployeeUI extends Composite {
     @UiHandler("saveBtn")
     public void clickOnSave(final ClickEvent e) {
         final String name = nameBox.getText();
+
         if (isNew && "".equals(name.trim())) {
             return;
         }
 
-        if (isNew) {
-
-            Integer lastId = -1;
-            for (final Integer id : Pgu_test_widget_employees.id2employees.keySet()) {
-                lastId = id;
-            }
-
-            lastId++;
-
-            final Employee employee = new Employee();
-            employee.setId(lastId);
-            employee.setName(name);
-
-            Pgu_test_widget_employees.id2employees.put(employee.getId(), employee);
-
-        } else {
-            final Employee employee = Pgu_test_widget_employees.id2employees.get(current_id);
-            employee.setName(name);
+        final ArrayList<String> technos = new ArrayList<String>();
+        if (java.getValue()) {
+            technos.add(Technos.JAVA);
+        }
+        if (clojure.getValue()) {
+            technos.add(Technos.CLOJURE);
+        }
+        if (net.getValue()) {
+            technos.add(Technos.NET);
+        }
+        if (js.getValue()) {
+            technos.add(Technos.JS);
+        }
+        if (gwt.getValue()) {
+            technos.add(Technos.GWT);
+        }
+        if (sql.getValue()) {
+            technos.add(Technos.SQL);
+        }
+        if (nosql.getValue()) {
+            technos.add(Technos.NOSQL);
         }
 
-        pgu_test_widget_employees.goToEntities();
+        if (isNew) {
+
+            final Employee employee = new Employee();
+            employee.setName(name);
+            employee.setTechnos(technos);
+            pgu_test_widget_employees.saveEmployee(employee);
+
+        } else {
+
+            currentEmployee.setName(name);
+            currentEmployee.setTechnos(technos);
+            pgu_test_widget_employees.saveEmployee(currentEmployee);
+        }
     }
 
 }

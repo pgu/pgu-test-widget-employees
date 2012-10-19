@@ -1,5 +1,9 @@
 package pgu.widget.employees.client;
 
+import java.util.ArrayList;
+
+import pgu.widget.employees.shared.Employee;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,9 +39,9 @@ public class EmployeesUI extends Composite {
         pgu_test_widget_employees.goToNewEntity();
     }
 
-    public void showEmployees() {
-        final String nb = "" + Pgu_test_widget_employees.id2employees.size();
-        pgu_test_widget_employees.sendNotificationToContainer(nb);
+    public void showEmployees(final ArrayList<Employee> employees) {
+        final String nb = "" + employees.size();
+        pgu_test_widget_employees.sendTitleToContainer(nb);
 
         final StringBuilder sb = new StringBuilder();
 
@@ -51,8 +55,8 @@ public class EmployeesUI extends Composite {
                 "<tbody ui:field=\"tableBody\">"+ //
                 "" //
                 );
-        for (int i = 0; i < Pgu_test_widget_employees.id2employees.size(); i++) {
-            final Employee employee = Pgu_test_widget_employees.id2employees.get(i);
+
+        for (final Employee employee: employees) {
 
             sb.append("" + //
                     "<tr>" + //

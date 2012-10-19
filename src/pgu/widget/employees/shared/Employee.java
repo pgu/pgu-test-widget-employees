@@ -1,25 +1,42 @@
-package pgu.widget.employees.client;
+package pgu.widget.employees.shared;
 
-public class Employee {
+import java.util.ArrayList;
 
-    private int id;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class Employee implements IsSerializable {
+
+    private Integer id;
     private String name;
+    private ArrayList<String> technos;
+
     public String getName() {
         return name;
     }
     public void setName(final String name) {
         this.name = name;
     }
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
-    public void setId(final int id) {
+
+    public void setId(final Integer id) {
         this.id = id;
     }
+
+    public ArrayList<String> getTechnos() {
+        return technos;
+    }
+    public void setTechnos(final ArrayList<String> technos) {
+        this.technos = technos;
+    }
+
     @Override
     public String toString() {
-        return "Employee [id=" + id + ", name=" + name + "]";
+        return "Employee [id=" + id + ", name=" + name + ", technos=" + technos + "]";
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -18,7 +18,7 @@
   
   <servlet-mapping>
     <servlet-name>menuServlet</servlet-name>
-    <url-pattern>/pgu_test_widget_employees/menu</url-pattern>
+    <url-pattern>/menu</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

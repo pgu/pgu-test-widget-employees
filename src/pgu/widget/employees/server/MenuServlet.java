@@ -23,6 +23,11 @@ public class MenuServlet extends HttpServlet {
                 "              'code':'0'                   " + //
                 "             ,'title':'Employees'          " + //
                 "            }                              " + //
+                "            ,{                             " + //
+                "              'code':'1'                   " + //
+                "             ,'title':'Overview'           " + //
+                "             ,'place':'charts'             " + //
+                "            }                              " + //
                 "           ]                               " + //
                 "}                                          " + //
                 ""; //

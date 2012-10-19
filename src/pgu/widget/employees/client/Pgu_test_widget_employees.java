@@ -1,13 +1,25 @@
 package pgu.widget.employees.client;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import pgu.widget.employees.shared.Employee;
+
+import com.github.gwtbootstrap.client.ui.Brand;
+import com.github.gwtbootstrap.client.ui.Nav;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.Navbar;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -15,19 +27,8 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
     private final GreetingServiceAsync             greetingService = GWT.create(GreetingService.class);
 
-    public static LinkedHashMap<Integer, Employee> id2employees    = new LinkedHashMap<Integer, Employee>();
-    static {
-        for (int i = 0; i < 5; i++) {
-
-            final Employee employee = new Employee();
-            employee.setId(i);
-            employee.setName("John Smith" + i);
-
-            id2employees.put(employee.getId(), employee);
-        }
-    }
-
     final SimplePanel                              simplePanel     = new SimplePanel();
+    private ChartsUI                               chartsUI     = null;
     private EmployeesUI                            employeesUI     = null;
     private EmployeeUI                             employeeUI      = null;
 
@@ -40,17 +41,68 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
         exportJSMethod();
 
-        RootPanel.get().add(simplePanel);
+        final HTMLPanel appView = new HTMLPanel("");
+        if (!hasContainer()) {
+
+            final NavLink employeesLink = new NavLink("Employees");
+            final NavLink chartsLink = new NavLink("Overview");
+
+            final Nav nav = new Nav();
+            nav.add(employeesLink);
+            nav.add(chartsLink);
+
+            final Brand brand = new Brand("My Company");
+
+            final Navbar menu = new Navbar();
+            menu.add(brand);
+            menu.add(nav);
+
+            appView.add(menu);
+
+            employeesLink.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(final ClickEvent event) {
+                    goToEntities();
+                }
+            });
+
+            chartsLink.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(final ClickEvent event) {
+                    goToCharts();
+                }
+            });
+        }
+        appView.add(simplePanel);
+
+
+        RootPanel.get().add(appView);
 
         employeeUI = new EmployeeUI(this);
         employeesUI = new EmployeesUI(this);
+        chartsUI = new ChartsUI(this);
 
         log("has container? " + hasContainer());
 
         if (hasContainer()) {
-            sendNotificationToContainer("");
-            sendHistoryTokenToContainer(TOKEN_EMPLOYEES);
+            //            sendTitleToContainer("");
+            //            sendHistoryTokenToContainer(TOKEN_EMPLOYEES);
 
+            final String href = Window.Location.getHref();
+            if (href.contains("#")) {
+                final String[] parts = href.split("#");
+                if (parts.length == 2) {
+                    final String place = parts[1];
+                    show(place);
+
+                } else {
+                    showEmployeesView();
+                }
+            } else {
+                showEmployeesView();
+            }
         } else {
             showEmployeesView();
         }
@@ -85,6 +137,18 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
                     }
 
+                } else if ( //
+                        TOKEN_CHARTS.equals(token) //
+                        ) {
+
+                    if (hasContainer()) {
+                        sendHistoryTokenToContainer(TOKEN_CHARTS);
+
+                    } else {
+                        showChartsView();
+
+                    }
+
                 } else {
                     throw new UnsupportedOperationException("Unknown token " + token);
                 }
@@ -96,29 +160,80 @@ public class Pgu_test_widget_employees implements EntryPoint {
         listenToMessage(functionToApplyOnContainerAction(this));
     }
 
-    private void showEmployeeView(final String token) {
+    private void showEmployeeView(final String place) {
 
-        String employee_id = null;
-        if (TOKEN_EMPLOYEE.equals(token)) {
-            employee_id = null;
+        String employeeId = null;
+        if (TOKEN_EMPLOYEE.equals(place)) {
+            employeeId = null;
 
         } else {
 
-            final String[] parts = token.split(":");
+            final String[] parts = place.split(":");
             if (parts.length == 2) {
-                employee_id = parts[1];
+                employeeId = parts[1];
             } else {
-                employee_id = null;
+                employeeId = null;
             }
         }
 
         simplePanel.setWidget(employeeUI);
-        employeeUI.setEmployeeId(employee_id);
+
+        if (null == employeeId || "".equals(employeeId.trim())) {
+            employeeUI.setEmployee(null);
+
+        } else {
+            greetingService.fetchEmployee(employeeId, new AsyncCallback<Employee>() {
+
+                @Override
+                public void onFailure(final Throwable caught) {
+                    throw new RuntimeException(caught);
+                }
+
+                @Override
+                public void onSuccess(final Employee result) {
+                    employeeUI.setEmployee(result);
+                }
+
+            });
+
+        }
+
+    }
+
+    private void showChartsView() {
+        simplePanel.setWidget(chartsUI);
+
+        greetingService.fetchDistribution(new AsyncCallback<HashMap<String, Integer>>() {
+
+            @Override
+            public void onFailure(final Throwable caught) {
+                throw new RuntimeException(caught);
+            }
+
+            @Override
+            public void onSuccess(final HashMap<String, Integer> result) {
+                chartsUI.showDistribution(result);
+            }
+
+        });
     }
 
     private void showEmployeesView() {
         simplePanel.setWidget(employeesUI);
-        employeesUI.showEmployees();
+
+        greetingService.fetchEmployees(new AsyncCallback<ArrayList<Employee>>() {
+
+            @Override
+            public void onFailure(final Throwable caught) {
+                throw new RuntimeException(caught);
+            }
+
+            @Override
+            public void onSuccess(final ArrayList<Employee> result) {
+                employeesUI.showEmployees(result);
+            }
+        });
+
     }
 
     private native boolean hasContainer() /*-{
@@ -152,6 +267,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
     private static final String TOKEN_EMPLOYEES = "employees";
     private static final String TOKEN_EMPLOYEE  = "employee";
+    private static final String TOKEN_CHARTS  = "charts";
 
     public static void editEmployee(final String id) {
         String suffix_id = "";
@@ -167,6 +283,10 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
     public void goToNewEntity() {
         editEmployee(null);
+    }
+
+    public void goToCharts() {
+        History.newItem(TOKEN_CHARTS);
     }
 
     public void goToEntities() {
@@ -192,7 +312,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
     //
     // }-*/;
 
-    public native void sendNotificationToContainer(String nb) /*-{
+    public native void sendTitleToContainer(String nb) /*-{
 
 		var title = '';
 		if (nb === null || nb.trim() === '') {
@@ -208,8 +328,6 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
 		var msg_back = JSON.stringify(notification);
 		$wnd.console.log(msg_back);
-
-		$wnd.console.log($wnd.parent);
 
 		if ($wnd.parent //
 				&& $wnd !== $wnd.parent) {
@@ -239,8 +357,8 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
                  if (msg.type === 'history') {
 
-                    var token = msg.token;
-                    activity.@pgu.widget.employees.client.Pgu_test_widget_employees::show(Ljava/lang/String;)(token);
+                    var place = msg.place;
+                    activity.@pgu.widget.employees.client.Pgu_test_widget_employees::show(Ljava/lang/String;)(place);
 
                  } else {
                      $wnd.console.log('Unsupported action ' + msg.action);
@@ -253,24 +371,71 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
      }-*/;
 
-    public void show(final String token) {
+    public void show(final String place) {
 
-        log("show: " + token);
+        log("show: " + place);
 
-        if (TOKEN_EMPLOYEE.equals(token) //
-                || token.contains(TOKEN_EMPLOYEE + ":")) {
-
-            showEmployeeView(token);
-
-        } else if (TOKEN_EMPLOYEES.equals(token) //
-                || "".equals(token)) {
+        if ( //
+                "".equals(place) //
+                || TOKEN_EMPLOYEES.equals(place) //
+                ) {
 
             showEmployeesView();
 
+        } else if ( //
+                TOKEN_EMPLOYEE.equals(place) //
+                || place.startsWith(TOKEN_EMPLOYEE + ":") //
+                ) {
+
+            showEmployeeView(place);
+
+        } else if ( //
+                TOKEN_CHARTS.equals(place) //
+                ) {
+
+            showChartsView();
+
         } else {
-            throw new UnsupportedOperationException("Unknown token " + token);
+            throw new UnsupportedOperationException("Unknown token " + place);
         }
 
     }
+
+    public void saveEmployee(final Employee employee) {
+        greetingService.saveEmployee(employee, new AsyncCallback<Void>() {
+
+            @Override
+            public void onFailure(final Throwable caught) {
+                sendNotificationToContainer("A technical problem occurred while saving the employee " + employee.getName() + ".");
+                // stays on the edition
+            }
+
+            @Override
+            public void onSuccess(final Void result) {
+                sendNotificationToContainer("The employee " + employee.getName() + " has been successfully saved!");
+                goToEntities();
+            }
+
+        });
+    }
+
+    public native void sendNotificationToContainer(String msg) /*-{
+
+        var notification = {};
+        notification.type = 'notification';
+        notification.id = 'employees';
+        notification.msg = msg;
+
+        var msg_back = JSON.stringify(notification);
+        $wnd.console.log(msg_back);
+
+        if ($wnd.parent //
+                && $wnd !== $wnd.parent) {
+
+            $wnd.parent.postMessage(msg_back, 'http://localhost:8080');
+            $wnd.parent.postMessage(msg_back, 'http://127.0.0.1:8888');
+        }
+
+    }-*/;
 
 }
