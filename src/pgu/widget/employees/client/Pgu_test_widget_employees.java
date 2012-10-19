@@ -22,6 +22,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.CoreChart;
 
 public class Pgu_test_widget_employees implements EntryPoint {
 
@@ -39,6 +41,18 @@ public class Pgu_test_widget_employees implements EntryPoint {
     @Override
     public void onModuleLoad() {
 
+        final Runnable onLoadCallback = new Runnable() {
+            @Override
+            public void run() {
+                onModuleLoaded();
+            }
+
+        };
+
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, CoreChart.PACKAGE);
+    }
+
+    private void onModuleLoaded() {
         exportJSMethod();
 
         final HTMLPanel appView = new HTMLPanel("");
@@ -54,6 +68,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
             final Brand brand = new Brand("My Company");
 
             final Navbar menu = new Navbar();
+            menu.addStyleName("navbar-fixed-top");
             menu.add(brand);
             menu.add(nav);
 
@@ -90,7 +105,11 @@ public class Pgu_test_widget_employees implements EntryPoint {
             //            sendTitleToContainer("");
             //            sendHistoryTokenToContainer(TOKEN_EMPLOYEES);
 
+        } else {
+
             final String href = Window.Location.getHref();
+            GWT.log(href);
+
             if (href.contains("#")) {
                 final String[] parts = href.split("#");
                 if (parts.length == 2) {
@@ -103,8 +122,6 @@ public class Pgu_test_widget_employees implements EntryPoint {
             } else {
                 showEmployeesView();
             }
-        } else {
-            showEmployeesView();
         }
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -413,6 +430,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
             @Override
             public void onSuccess(final Void result) {
                 sendNotificationToContainer("The employee " + employee.getName() + " has been successfully saved!");
+                employeeUI.clearView();
                 goToEntities();
             }
 

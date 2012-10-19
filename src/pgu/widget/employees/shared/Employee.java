@@ -8,8 +8,15 @@ public class Employee implements IsSerializable {
 
     private Integer id;
     private String name;
+    private String picture;
     private ArrayList<String> technos;
 
+    public String getPicture() {
+        return picture;
+    }
+    public void setPicture(final String picture) {
+        this.picture = picture;
+    }
     public String getName() {
         return name;
     }

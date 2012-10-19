@@ -9,6 +9,15 @@
             <b:WellForm>
                 <b:ControlLabel>Name</b:ControlLabel>
                 <b:TextBox ui:field="nameBox" placeholder="John Smith"/>
+                <g:HTMLPanel ui:field="pictureContainer" addStyleNames="row-fluid">
+                    <ul class="thumbnails">
+                      <li class="span3">
+                        <a href="javascript:;" class="thumbnail">
+                          <g:Image ui:field="picture" />
+                        </a>
+                      </li>
+                    </ul>
+                </g:HTMLPanel>
                 <b:ControlLabel>Technos</b:ControlLabel>
                 <b:CheckBox ui:field="java">Java</b:CheckBox>
                 <b:CheckBox ui:field="clojure">Clojure</b:CheckBox>

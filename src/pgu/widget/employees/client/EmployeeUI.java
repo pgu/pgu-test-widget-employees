@@ -14,6 +14,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class EmployeeUI extends Composite {
@@ -29,6 +31,11 @@ public class EmployeeUI extends Composite {
     TextBox nameBox;
     @UiField
     CheckBox java, clojure, net, js, gwt, sql, nosql;
+    @UiField
+    HTMLPanel pictureContainer;
+    @UiField
+    Image picture;
+
 
     private final Pgu_test_widget_employees pgu_test_widget_employees;
 
@@ -41,9 +48,10 @@ public class EmployeeUI extends Composite {
     private boolean isNew = true;
     private Employee currentEmployee;
 
-
-
     public void setEmployee(final Employee employee) {
+
+        picture.setUrl("");
+        pictureContainer.setVisible(false);
 
         java.setValue(false);
         clojure.setValue(false);
@@ -62,6 +70,16 @@ public class EmployeeUI extends Composite {
 
         } else {
             nameBox.setText(employee.getName());
+
+            if (null == employee.getPicture()) {
+                pictureContainer.setVisible(false);
+                picture.setUrl("");
+
+            } else {
+                pictureContainer.setVisible(true);
+                picture.setUrl(employee.getPicture());
+
+            }
 
             if (employee.getTechnos() != null) {
                 for (final String t : employee.getTechnos()) {
@@ -137,6 +155,19 @@ public class EmployeeUI extends Composite {
             currentEmployee.setTechnos(technos);
             pgu_test_widget_employees.saveEmployee(currentEmployee);
         }
+    }
+
+    public void clearView() {
+        nameBox.setText("");
+        pictureContainer.setVisible(false);
+        picture.setUrl("");
+        java.setValue(false);
+        clojure.setValue(false);
+        net.setValue(false);
+        js.setValue(false);
+        gwt.setValue(false);
+        sql.setValue(false);
+        nosql.setValue(false);
     }
 
 }

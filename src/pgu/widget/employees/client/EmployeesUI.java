@@ -64,7 +64,7 @@ public class EmployeesUI extends Composite {
                     employee.getName() + //
                     " </td>" + //
                     " <td>" + //
-                    " <a href=\"javascript:;\" class=\"btn btn-primary\" onclick=\"edit_employee(''+" + employee.getId() + ");return false;\"><i></i> Edit </a>" + //
+                    " <a href=\"javascript:;\" class=\"btn btn-primary\" onclick=\"edit_employee(''+" + employee.getId() + ");return false;\"><i class=\"icon-pencil\"></i></a>" + //
                     " </td>" + //
                     "</tr>" + //
                     "" //
