@@ -56,42 +56,8 @@ public class Pgu_test_widget_employees implements EntryPoint {
         exportJSMethod();
 
         final HTMLPanel appView = new HTMLPanel("");
-        if (!hasContainer()) {
-
-            final NavLink employeesLink = new NavLink("Employees");
-            final NavLink chartsLink = new NavLink("Overview");
-
-            final Nav nav = new Nav();
-            nav.add(employeesLink);
-            nav.add(chartsLink);
-
-            final Brand brand = new Brand("My Company");
-
-            final Navbar menu = new Navbar();
-            menu.addStyleName("navbar-fixed-top");
-            menu.add(brand);
-            menu.add(nav);
-
-            appView.add(menu);
-
-            employeesLink.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(final ClickEvent event) {
-                    goToEntities();
-                }
-            });
-
-            chartsLink.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(final ClickEvent event) {
-                    goToCharts();
-                }
-            });
-        }
+        addMenuApp(appView);
         appView.add(simplePanel);
-
 
         RootPanel.get().add(appView);
 
@@ -101,27 +67,30 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
         log("has container? " + hasContainer());
 
+        final String href = Window.Location.getHref();
+        log("href: " + href);
+
+        if (href.contains("#")) {
+
+            final String[] parts = href.split("#");
+            if (parts.length == 2) {
+
+                final String place = parts[1];
+                show(place);
+
+            } else {
+                showEmployeesView();
+            }
+        } else {
+            showEmployeesView();
+        }
+
         if (hasContainer()) {
             //            sendTitleToContainer("");
             //            sendHistoryTokenToContainer(TOKEN_EMPLOYEES);
 
         } else {
 
-            final String href = Window.Location.getHref();
-            GWT.log(href);
-
-            if (href.contains("#")) {
-                final String[] parts = href.split("#");
-                if (parts.length == 2) {
-                    final String place = parts[1];
-                    show(place);
-
-                } else {
-                    showEmployeesView();
-                }
-            } else {
-                showEmployeesView();
-            }
         }
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -132,7 +101,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
                 log("history: " + token);
 
                 if (TOKEN_EMPLOYEE.equals(token) //
-                        || token.contains(TOKEN_EMPLOYEE + ":")) {
+                        || token.startsWith(TOKEN_EMPLOYEE + ":")) {
 
 
                     if (hasContainer()) {
@@ -175,6 +144,43 @@ public class Pgu_test_widget_employees implements EntryPoint {
         });
 
         listenToMessage(functionToApplyOnContainerAction(this));
+    }
+
+    private void addMenuApp(final HTMLPanel appView) {
+        if (!hasContainer()) {
+
+            final NavLink employeesLink = new NavLink("Employees");
+            final NavLink chartsLink = new NavLink("Overview");
+
+            final Nav nav = new Nav();
+            nav.add(employeesLink);
+            nav.add(chartsLink);
+
+            final Brand brand = new Brand("My Company");
+
+            final Navbar menu = new Navbar();
+            menu.addStyleName("navbar-fixed-top");
+            menu.add(brand);
+            menu.add(nav);
+
+            appView.add(menu);
+
+            employeesLink.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(final ClickEvent event) {
+                    goToEntities();
+                }
+            });
+
+            chartsLink.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(final ClickEvent event) {
+                    goToCharts();
+                }
+            });
+        }
     }
 
     private void showEmployeeView(final String place) {
