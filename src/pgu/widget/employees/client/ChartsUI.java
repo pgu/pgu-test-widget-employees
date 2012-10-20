@@ -8,17 +8,14 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.AbstractDataTable.ColumnType;
 import com.google.gwt.visualization.client.DataTable;
-import com.google.gwt.visualization.client.Selection;
 import com.google.gwt.visualization.client.events.SelectHandler;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart;
 import com.google.gwt.visualization.client.visualizations.corechart.PieChart.PieOptions;
@@ -54,34 +51,34 @@ public class ChartsUI extends Composite {
         return new SelectHandler() {
             @Override
             public void onSelect(final SelectEvent event) {
-                String message = "";
-
-                final JsArray<Selection> selections = chart.getSelections();
-
-                for (int i = 0; i < selections.length(); i++) {
-                    message += i == 0 ? "" : "\n";
-
-                    final Selection selection = selections.get(i);
-
-                    if (selection.isCell()) {
-                        final int row = selection.getRow();
-                        final int column = selection.getColumn();
-
-                        message += "cell " + row + ":" + column + " selected";
-
-                    } else if (selection.isRow()) {
-
-                        final int row = selection.getRow();
-                        message += "row " + row + " selected";
-
-                    } else {
-                        // unreachable
-                        message += "Pie chart selections should be either row selections or cell selections.";
-                        message += "  Other visualizations support column selections as well.";
-                    }
-                }
-
-                Window.alert(message);
+                //                String message = "";
+                //
+                //                final JsArray<Selection> selections = chart.getSelections();
+                //
+                //                for (int i = 0; i < selections.length(); i++) {
+                //                    message += i == 0 ? "" : "\n";
+                //
+                //                    final Selection selection = selections.get(i);
+                //
+                //                    if (selection.isCell()) {
+                //                        final int row = selection.getRow();
+                //                        final int column = selection.getColumn();
+                //
+                //                        message += "cell " + row + ":" + column + " selected";
+                //
+                //                    } else if (selection.isRow()) {
+                //
+                //                        final int row = selection.getRow();
+                //                        message += "row " + row + " selected";
+                //
+                //                    } else {
+                //                        // unreachable
+                //                        message += "Pie chart selections should be either row selections or cell selections.";
+                //                        message += "  Other visualizations support column selections as well.";
+                //                    }
+                //                }
+                //
+                //                Window.alert(message);
             }
         };
     }
