@@ -103,12 +103,10 @@ public class Pgu_test_widget_employees implements EntryPoint {
                 if (TOKEN_EMPLOYEE.equals(token) //
                         || token.startsWith(TOKEN_EMPLOYEE + ":")) {
 
-
                     if (hasContainer()) {
                         sendHistoryTokenToContainer(token);
 
                     } else {
-
                         showEmployeeView(token);
                     }
 
@@ -347,6 +345,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
 		var notification = {};
 		notification.type = 'title';
 		notification.id = 'employees';
+		notification.code = '0';
 		notification.title = title;
 
 		var msg_back = JSON.stringify(notification);
@@ -369,8 +368,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
      return function receiver(e) {
 
-             $wnd.console.log('employees');
-             $wnd.console.log(e);
+             $wnd.console.log('receiving: employees: ' + e.data);
 
              if (e.origin === 'http://localhost:8080' //
                  || e.origin === 'http://127.0.0.1:8888' //
