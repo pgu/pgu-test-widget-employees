@@ -1,6 +1,14 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+            xmlns:g="urn:import:com.google.gwt.user.client.ui"
+            xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-    <g:HTMLPanel ui:field="container">
+    <g:HTMLPanel addStyleNames="container-fluid">
+        <div class="row-fluid">
+            <g:HTMLPanel ui:field="container" />
+        </div>
+        <div class="row-fluid">
+            <b:Button ui:field="resizeBtn" />         
+        </div>
     </g:HTMLPanel>
 </ui:UiBinder> 

@@ -107,4 +107,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 
         return distribution;
     }
+
+    @Override
+    public void deleteEmployee(final Integer id) {
+        DAO.id2employees.remove(id);
+    }
 }

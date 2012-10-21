@@ -20,4 +20,6 @@ public interface GreetingServiceAsync {
     void saveEmployee(Employee employee, AsyncCallback<Void> asyncCallback);
 
     void fetchDistribution(AsyncCallback<HashMap<String, Integer>> asyncCallback);
+
+    void deleteEmployee(Integer id, AsyncCallback<Void> asyncCallback);
 }

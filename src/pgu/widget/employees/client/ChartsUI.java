@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.IconSize;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,13 +34,35 @@ public class ChartsUI extends Composite {
 
     @UiField
     HTMLPanel container;
+    @UiField
+    Button resizeBtn;
 
     Pgu_test_widget_employees presenter;
+
+    private boolean isFullSize = false;
 
     public ChartsUI(final Pgu_test_widget_employees presenter) {
         initWidget(uiBinder.createAndBindUi(this));
 
         this.presenter = presenter;
+
+
+        resizeBtn.setIcon(IconType.RESIZE_FULL);
+        resizeBtn.setIconSize(IconSize.LARGE);
+        resizeBtn.setVisible(false);
+    }
+
+    @UiHandler("resizeBtn")
+    public void clickResize(final ClickEvent e) {
+        isFullSize = !isFullSize;
+
+        if (isFullSize) {
+            resizeBtn.setIcon(IconType.RESIZE_SMALL);
+        } else {
+            resizeBtn.setIcon(IconType.RESIZE_FULL);
+        }
+
+        presenter.sendSizeNotifToContainer(isFullSize);
     }
 
     private PieOptions createOptions() {
@@ -144,6 +171,7 @@ public class ChartsUI extends Composite {
         pie.addSelectHandler(createSelectHandler(pie));
         container.add(pie);
 
+        resizeBtn.setVisible(presenter.hasContainer());
     }
 
 }

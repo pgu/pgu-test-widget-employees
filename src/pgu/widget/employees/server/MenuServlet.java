@@ -12,16 +12,23 @@ public class MenuServlet extends HttpServlet {
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().print(getMenu());
+        final int empNb = DAO.id2employees.size();
+
+        String empTitle = "Employees";
+        if (empNb > 0) {
+            empTitle += " (" + empNb + ")";
+        }
+
+        resp.getWriter().print(getMenu(empTitle));
     }
 
-    public static String getMenu() {
+    public static String getMenu(final String empTitle) {
         final String menuJson = "" + //
                 "{'entries':                                " + //
                 "           [                               " + //
                 "            {                              " + //
                 "              'code':'0'                   " + //
-                "             ,'title':'Employees'          " + //
+                "             ,'title':'%s'                 " + //
                 "            }                              " + //
                 "            ,{                             " + //
                 "              'code':'1'                   " + //
@@ -32,9 +39,12 @@ public class MenuServlet extends HttpServlet {
                 "}                                          " + //
                 ""; //
 
-        return menuJson //
+        return String.format( //
+                menuJson //
                 .replaceAll("'", "\"") //
                 .replaceAll("\\s", "") //
+                //
+                , empTitle)
                 ;
     }
     //

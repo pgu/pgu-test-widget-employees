@@ -22,4 +22,6 @@ public interface GreetingService extends RemoteService {
     void saveEmployee(Employee employee);
 
     HashMap<String, Integer> fetchDistribution();
+
+    void deleteEmployee(Integer id);
 }

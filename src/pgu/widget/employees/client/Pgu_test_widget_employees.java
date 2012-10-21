@@ -40,6 +40,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
+        staticThis = this;
 
         final Runnable onLoadCallback = new Runnable() {
             @Override
@@ -64,8 +65,6 @@ public class Pgu_test_widget_employees implements EntryPoint {
         employeeUI = new EmployeeUI(this);
         employeesUI = new EmployeesUI(this);
         chartsUI = new ChartsUI(this);
-
-        log("has container? " + hasContainer());
 
         final String href = Window.Location.getHref();
         log("href: " + href);
@@ -98,7 +97,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
             @Override
             public void onValueChange(final ValueChangeEvent<String> event) {
                 final String token = event.getValue();
-                log("history: " + token);
+                log("history: [" + token + "]");
 
                 if (TOKEN_EMPLOYEE.equals(token) //
                         || token.startsWith(TOKEN_EMPLOYEE + ":")) {
@@ -239,6 +238,8 @@ public class Pgu_test_widget_employees implements EntryPoint {
         });
     }
 
+    private final HashMap<Integer, Employee> id2employees = new HashMap<Integer, Employee>();
+
     private void showEmployeesView() {
         simplePanel.setWidget(employeesUI);
 
@@ -251,13 +252,18 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
             @Override
             public void onSuccess(final ArrayList<Employee> result) {
+                id2employees.clear();
+                for (final Employee employee : result) {
+                    id2employees.put(employee.getId(), employee);
+                }
+
                 employeesUI.showEmployees(result);
             }
         });
 
     }
 
-    private native boolean hasContainer() /*-{
+    public native boolean hasContainer() /*-{
 		return $wnd.parent //
 				&& $wnd !== $wnd.parent;
     }-*/;
@@ -284,11 +290,37 @@ public class Pgu_test_widget_employees implements EntryPoint {
     private native void exportJSMethod() /*-{
        $wnd.edit_employee =
           $entry(@pgu.widget.employees.client.Pgu_test_widget_employees::editEmployee(Ljava/lang/String;));
+       $wnd.delete_employee =
+          $entry(@pgu.widget.employees.client.Pgu_test_widget_employees::deleteEmployee(Ljava/lang/String;));
     }-*/;
 
     private static final String TOKEN_EMPLOYEES = "employees";
     private static final String TOKEN_EMPLOYEE  = "employee";
     private static final String TOKEN_CHARTS  = "charts";
+
+    private static Pgu_test_widget_employees staticThis = null;
+
+    public static void deleteEmployee(final String _id) {
+
+        if (null == _id || "".equals(_id.trim().toString())) {
+            return;
+        }
+
+        final Integer id = Integer.valueOf(_id);
+        staticThis.greetingService.deleteEmployee(id, new AsyncCallback<Void>() {
+
+            @Override
+            public void onFailure(final Throwable caught) {
+                staticThis.sendNotificationToContainer("error", "A technical problem occurred while deleting the employee " + staticThis.id2employees.get(id).getName() + ".");
+            }
+
+            @Override
+            public void onSuccess(final Void result) {
+                staticThis.sendNotificationToContainer("success", "The employee " + staticThis.id2employees.get(id).getName() + " has been successfully deleted!");
+                staticThis.showEmployeesView();
+            }
+        });
+    }
 
     public static void editEmployee(final String id) {
         String suffix_id = "";
@@ -427,13 +459,13 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
             @Override
             public void onFailure(final Throwable caught) {
-                sendNotificationToContainer("A technical problem occurred while saving the employee " + employee.getName() + ".");
+                sendNotificationToContainer("error", "A technical problem occurred while saving the employee " + employee.getName() + ".");
                 // stays on the edition
             }
 
             @Override
             public void onSuccess(final Void result) {
-                sendNotificationToContainer("The employee " + employee.getName() + " has been successfully saved!");
+                sendNotificationToContainer("success", "The employee " + employee.getName() + " has been successfully saved!");
                 employeeUI.clearView();
                 goToEntities();
             }
@@ -441,12 +473,13 @@ public class Pgu_test_widget_employees implements EntryPoint {
         });
     }
 
-    public native void sendNotificationToContainer(String msg) /*-{
+    public native void sendNotificationToContainer(String alertType, String msg) /*-{
 
         var notification = {};
         notification.type = 'notification';
         notification.id = 'employees';
-        notification.msg = msg;
+        notification.body = msg;
+        notification.alert_type = alertType;
 
         var msg_back = JSON.stringify(notification);
         $wnd.console.log(msg_back);
@@ -458,6 +491,24 @@ public class Pgu_test_widget_employees implements EntryPoint {
             $wnd.parent.postMessage(msg_back, 'http://127.0.0.1:8888');
         }
 
+    }-*/;
+
+    public native void sendSizeNotifToContainer(final boolean isFullSize) /*-{
+
+        var notification = {};
+        notification.type = 'size';
+        notification.id = 'employees';
+        notification.is_full = isFullSize;
+
+        var msg_back = JSON.stringify(notification);
+        $wnd.console.log(msg_back);
+
+        if ($wnd.parent //
+                && $wnd !== $wnd.parent) {
+
+            $wnd.parent.postMessage(msg_back, 'http://localhost:8080');
+            $wnd.parent.postMessage(msg_back, 'http://127.0.0.1:8888');
+        }
     }-*/;
 
 }
