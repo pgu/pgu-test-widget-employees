@@ -10,7 +10,7 @@
   
   <entry-point class='pgu.widget.employees.client.Pgu_test_widget_employees'/>
   
-  <set-property name="user.agent" value="safari"/>
+  <set-property name="user.agent" value="safari,gecko1_8"/>
   <set-property name="locale" value="default" />
   
   <source path='client'/>
