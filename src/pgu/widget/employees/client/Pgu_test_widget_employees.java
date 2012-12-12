@@ -34,13 +34,15 @@ public class Pgu_test_widget_employees implements EntryPoint {
     private EmployeesUI                            employeesUI     = null;
     private EmployeeUI                             employeeUI      = null;
 
-    private native void log(String msg) /*-{
+    private native void console(String msg) /*-{
         $wnd.console.log("employees: " + msg);
     }-*/;
 
     @Override
     public void onModuleLoad() {
         staticThis = this;
+
+        console("! EMPLOYEES on module load");
 
         final Runnable onLoadCallback = new Runnable() {
             @Override
@@ -67,7 +69,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
         chartsUI = new ChartsUI(this);
 
         final String href = Window.Location.getHref();
-        log("href: " + href);
+        console("href: " + href);
 
         if (href.contains("#")) {
 
@@ -97,7 +99,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
             @Override
             public void onValueChange(final ValueChangeEvent<String> event) {
                 final String token = event.getValue();
-                log("history: [" + token + "]");
+                console("history: [" + token + "]");
 
                 if (TOKEN_EMPLOYEE.equals(token) //
                         || token.startsWith(TOKEN_EMPLOYEE + ":")) {
@@ -426,7 +428,7 @@ public class Pgu_test_widget_employees implements EntryPoint {
 
     public void show(final String place) {
 
-        log("show: " + place);
+        console("show: " + place);
 
         if ( //
                 "".equals(place) //
